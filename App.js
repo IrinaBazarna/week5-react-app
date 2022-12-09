@@ -1,12 +1,11 @@
-import React from "react";
-import Weather from "./Weather";
+import React from 'react';
+import Weather from './Weather';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src="" className="App-logo" alt="" />
         <h1>Wheather App</h1>
         <Weather />
         <p>
@@ -17,7 +16,8 @@ function App() {
             rel="noopener noreferrer"
           >
             Open sourse code
-          </a>{" "}
+          </a>
+          {""}
           by Irina Bazarna
         </p>
       </header>

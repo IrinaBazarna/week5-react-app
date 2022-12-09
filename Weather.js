@@ -2,64 +2,58 @@ import React, { useState } from "react";
 import WeatherDate from "./WeatherDate";
 import axios from "axios";
 
-
 function WeatherInf(props) {
-  const [city, setCity] = useState(props.city);
   const [weather, setWeather] = useState({ ready: false });
+  const [city, setCity] = useState(props.city);
 
   function weatherDate(response) {
     setWeather({
       ready: true,
-      city: response.city,
-      temperature: response.temperature.current,
-      wind: response.wind.speed,
-      humidity: response.temperature.humidity,
-      icon_url:
-        "http://shecodes-assets.s3.amazonaws.com/api/weather/icons/scattered-clouds-night.png",
-      description: response.condition.description,
+      date: new Date(response.data.dt * 1000),
+      city: response.data.name,
+      temperature: response.data.main.temp,
+      wind: response.data.wind.speed,
+      humidity: response.data.main.humidity,
+      iconUrl: response.data.weather[0].icon,
+      description: response.data.weather[0].description,
     });
   }
-  function handleSubmit(event) {
-    search();
-    weatherDate();
+  function search() {
+    const apiKey = "15b6ba0523386a8a73b38b2440a74dea";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    axios.get(apiUrl).then(weatherDate);
   }
-  function updateCity(event) {
+
+  function handleSubmit(event) {
     event.preventDefault();
+    search();
+  }
+
+  function updateCity(event) {
     setCity(event.target.value);
   }
-
-  function search() {
- 
-    const apiKey = "5b78a3odfaab869b543t250cfd808b8e";
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(handleSubmit);
-  }
-
-  let form = (
-    <div className="Weather">
-      <form onSubmit={handleSubmit}>
-        <div className="row">
-          <div className="col-9">
-            <input
-              type="search"
-              placeholder="Type a city"
-              onChange={updateCity}
-              className="form-control"
-              autoFocus="on"
-            />
-          </div>
-          <div className="col-3">
-            <input type="submit" value="Search" className="btn" />
-          </div>
-        </div>
-      </form>
-    </div>
-  );
 
   if (weather.ready) {
     return (
       <div>
-        {form}
+        <div className="Weather">
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-9">
+                <input
+                  type="search"
+                  placeholder="Type a city"
+                  onChange={updateCity}
+                  className="form-control"
+                  autoFocus="on"
+                />
+              </div>
+              <div className="col-3">
+                <input type="submit" value="Search" className="btn" />
+              </div>
+            </div>
+          </form>
+        </div>
         <WeatherDate data={weather} />
       </div>
     );
